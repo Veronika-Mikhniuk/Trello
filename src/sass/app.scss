@@ -93,15 +93,23 @@
     }
 
     &__task {
-        background-color: #f8f9fa;
         box-shadow: 0px 13px 35px rgba(0, 0, 0, .08);
         border-radius: 10px;
-        background-color: #dae8fc93;
         padding: 10px;
         margin-bottom: 10px;
         max-width: 380px;
         width: 100%;
         flex: 1;
+
+        &_blue { //Модификаторы для изменения цвета в зависимости от колонки
+            background-color: #dae8fc93;
+        }
+        &_gray {
+            background-color: #c0c3c55b;
+        }
+        &_green {
+            background-color: #d5e8d494;
+        }
 
         &-header {
             display: flex;
