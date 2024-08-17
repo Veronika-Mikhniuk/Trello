@@ -1,4 +1,4 @@
-import { generateUniqueId, getCurrentDate } from './methods.js'
+import { generateUniqueId, getCurrentDate, getColorClass } from './methods.js'
 
 
 function Task(title, description, user) {
@@ -8,7 +8,7 @@ function Task(title, description, user) {
     this.user = user
     this.status = 'todo'
     this.createdAt = getCurrentDate()
-    this.colorClass = 'board__task_blue'
+    this.colorClass = getColorClass(this.status)
 }
 
 export {

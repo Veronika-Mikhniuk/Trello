@@ -86,6 +86,7 @@
 
     &__tasks-wrapper {
         display: flex;
+        flex: 1;
         flex-direction: column;
         align-items: center;
         width: 100%;
@@ -99,7 +100,7 @@
         margin-bottom: 10px;
         max-width: 380px;
         width: 100%;
-        flex: 1;
+        // flex: 1;
 
         &_blue { //Модификаторы для изменения цвета в зависимости от колонки
             background-color: #dae8fc93;
@@ -141,6 +142,5 @@
             color: #6c757d;
         }
     }
-
 
 }
