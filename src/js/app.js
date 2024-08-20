@@ -45,7 +45,7 @@ function handleCloseModalAddTask() {
 
 function handleClickDropdownMove({ target }) {
     const tasks = getTasksFromStorage()
-    
+
     if (target.classList.contains('dropdown-item-todo') ||
         target.classList.contains('dropdown-item-progress') ||
         target.classList.contains('dropdown-item-done')) {
@@ -95,6 +95,19 @@ function render(tasks) {
     })
 }
 
+function getCurrentTime() {
+    const currentDate = new Date()
+
+    const currentHours = String(currentDate.getHours()).padStart(2, '0')
+    const currentMinutes = String(currentDate.getMinutes()).padStart(2, '0')
+    const currentSeconds = String(currentDate.getSeconds()).padStart(2, '0')
+
+    const timeElement = document.querySelector('.header__time-wrapper')
+
+    timeElement.innerHTML = ''
+    timeElement.insertAdjacentHTML('afterbegin', buildTemplateTime(currentHours, currentMinutes, currentSeconds))
+}
+
 // Templates------------------------------------------------------------------
 const buildTemplateTask = ({ title, description, user, createdAt, colorClass, id }) => {
     return `
@@ -140,5 +153,11 @@ const buildTemplateTask = ({ title, description, user, createdAt, colorClass, id
     `
 }
 
+const buildTemplateTime = (hours, minutes, seconds) => {
+    return `<p class="header__time mb-0"><span class="header__time-hours">${hours}</span>:<span class="header__time-minutes">${minutes}</span>:<span class="header__time-seconds">${seconds}</span></p>`
+}
+
 // -------------------------------код
 render(getTasksFromStorage())
+document.addEventListener('DOMContentLoaded', getCurrentTime)
+setInterval(getCurrentTime, 1000)
