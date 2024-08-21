@@ -93,6 +93,8 @@ function render(tasks) {
             doneBlock.insertAdjacentHTML('afterbegin', taskHTML)
         }
     })
+
+    updateTaskCount(tasks)
 }
 
 function getCurrentTime() {
@@ -106,6 +108,17 @@ function getCurrentTime() {
 
     timeElement.innerHTML = ''
     timeElement.insertAdjacentHTML('afterbegin', buildTemplateTime(currentHours, currentMinutes, currentSeconds))
+}
+
+function updateTaskCount(tasks) {
+    const todoTaskCounter = document.querySelector('.board__column-counter-todo')
+    const progressTaskCounter = document.querySelector('.board__column-counter-progress')
+    const doneTaskCounter = document.querySelector('.board__column-counter-done')
+
+    todoTaskCounter.innerHTML = tasks.filter(task => task.status == 'todo').length
+    progressTaskCounter.innerHTML = tasks.filter(task => task.status == 'in-progress').length
+    doneTaskCounter.innerHTML = tasks.filter(task => task.status == 'done').length
+
 }
 
 // Templates------------------------------------------------------------------

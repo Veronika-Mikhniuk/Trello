@@ -33,7 +33,8 @@
     &__column {
         display: flex;
         flex-direction: column;
-        justify-content: space-between;
+        justify-content: start;
+        height: max-content;
         gap: 10px;
         align-items: center;
         flex: 1;
@@ -86,7 +87,7 @@
 
     &__tasks-wrapper {
         display: flex;
-        flex: 1;
+        justify-content: start;
         flex-direction: column;
         align-items: center;
         width: 100%;
@@ -100,7 +101,6 @@
         margin-bottom: 10px;
         max-width: 380px;
         width: 100%;
-        // flex: 1;
 
         &_blue { //Модификаторы для изменения цвета в зависимости от колонки
             background-color: #dae8fc93;
