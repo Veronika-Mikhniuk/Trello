@@ -102,12 +102,15 @@
         max-width: 380px;
         width: 100%;
 
-        &_blue { //Модификаторы для изменения цвета в зависимости от колонки
+        &_blue {
+            //Модификаторы для изменения цвета в зависимости от колонки
             background-color: #dae8fc93;
         }
+
         &_gray {
             background-color: #c0c3c55b;
         }
+
         &_green {
             background-color: #d5e8d494;
         }
@@ -141,6 +144,17 @@
             font-size: 14px;
             color: #6c757d;
         }
+    }
+
+    &__task-delete, &__task-edit {
+        svg {
+            pointer-events: none;
+
+            path {
+                pointer-events: none;
+            }
+        }
+
     }
 
 }
