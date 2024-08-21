@@ -14,7 +14,7 @@
         <header class="header">
             <h1 class="header__title mb-0">Trello</h1>
             <div class="header__time-wrapper">
-                <!-- <p class="header__time mb-0"><span class="header__time-hours">00</span>:<span class="header__time-minutes">00</span>:<span class="header__time-seconds">00</span></p> -->
+                
             </div>
         </header>
         <main class="board">
@@ -24,7 +24,7 @@
                     <p class="board__column-counter-todo">2</p>
                 </div>
                 <div class="board__tasks-wrapper board__tasks-todo">
-                   
+
                 </div>
                 <button type="button" class="board__add-button" data-bs-toggle="modal" data-bs-target="#addTaskModal">Add todo</button>
             </div>
@@ -45,7 +45,7 @@
                 <div class="board__tasks-wrapper board__tasks-done">
 
                 </div>
-                <button type="button" class="board__delete-button">Delete all</button>
+                <button type="button" class="board__delete-button" data-bs-toggle="modal" data-bs-target="#deleteConfirmationModal">Delete all</button>
             </div>
         </main>
     </div>
@@ -87,6 +87,27 @@
         </div>
     </div>
     <!-- Modal Add Task -->
+
+    <!-- Modal Delete Done Tasks -->
+    <div class="modal fade" id="deleteConfirmationModal" tabindex="-1" aria-labelledby="deleteConfirmationModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteConfirmationModalLabel">Confirm Deletion</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to delete all done tasks? <br>This action cannot be undone.</p>
+                    <div class="d-flex justify-content-end">
+                        <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-primary" id="deleteTasksConfirm">Confirm</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal Delete Done Tasks -->
 </body>
 
 </html>

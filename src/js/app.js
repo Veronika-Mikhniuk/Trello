@@ -6,16 +6,19 @@ import { getColorClass, saveTasksToStorage, getTasksFromStorage } from './method
 
 // Variables------------------------------------------------------------------
 const addTaskModalElement = document.querySelector('#addTaskModal')
+const deleteTasksModalElement = document.querySelector('#deleteConfirmationModal')
 const addTaskModal = new Modal(addTaskModalElement) //Инициализация модального окна чтоб были доступны его методы
+const deleteConfirmationModal = new Modal(deleteTasksModalElement)
 
 const addTaskFormElement = document.querySelector('#addTaskForm')
 const tasksBlock = document.querySelector('.board')
-
+const deleteConfirmationButtonElement = document.querySelector('#deleteTasksConfirm')
 
 // Add event listeners------------------------------------------------------------------
 addTaskFormElement.addEventListener('submit', handleSubmitFormAddTask)
 addTaskModalElement.addEventListener('hidden.bs.modal', handleCloseModalAddTask)
 tasksBlock.addEventListener('click', handleClickDropdownMove)
+deleteConfirmationButtonElement.addEventListener('click', handleClickButtonDeleteDone)
 
 
 // Handlers------------------------------------------------------------------
@@ -68,6 +71,14 @@ function handleClickDropdownMove({ target }) {
             render(tasks)
         }
     }
+}
+
+function handleClickButtonDeleteDone() {
+    let tasks = getTasksFromStorage()
+    tasks = tasks.filter(task => task.status !== 'done')
+    saveTasksToStorage(tasks)
+    render(tasks)
+    deleteConfirmationModal.hide()
 }
 
 // Methods------------------------------------------------------------------
