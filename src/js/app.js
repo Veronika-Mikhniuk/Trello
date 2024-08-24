@@ -1,6 +1,7 @@
 import { Modal } from 'bootstrap' // обновить потом с тем что нужно
 import { Task } from './models.js'
 import { getColorClass, saveTasksToStorage, getTasksFromStorage } from './methods.js'
+import { getUsers } from './requests.js'
 
 // Обработка формы с добавлением задач
 
@@ -64,13 +65,13 @@ function handleClickDropdownMove({ target }) {
             } else if (target.classList.contains('dropdown-item-progress')) {
                 const progressTasksLength = tasks.filter(task => task.status == 'in-progress').length
 
-                if(progressTasksLength <= 5) {
+                if (progressTasksLength <= 5) {
                     tasks[index].status = 'in-progress'
                 } else {
                     const limitWarningModal = new Modal(document.querySelector('#taskLimitModal'))
                     limitWarningModal.show()
                 }
-                
+
             } else {
                 tasks[index].status = 'done'
             }
@@ -213,3 +214,4 @@ const buildTemplateTime = (hours, minutes, seconds) => {
 render(getTasksFromStorage())
 document.addEventListener('DOMContentLoaded', getCurrentTime)
 setInterval(getCurrentTime, 1000)
+getUsers()
