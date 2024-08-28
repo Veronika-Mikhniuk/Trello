@@ -24,8 +24,17 @@ function getTasksFromStorage() {
     return tasks ? JSON.parse(tasks) : []
 }
 
+function getUsersFromStorage() {
+    const users = localStorage.getItem('users')
+    return users ? JSON.parse(users) : []
+}
+
 function saveTasksToStorage(tasks) {
     localStorage.setItem('tasks', JSON.stringify(tasks))
+}
+
+function saveUsersToStorage(users) {
+    localStorage.setItem('users', JSON.stringify(users))
 }
 
 export {
@@ -33,5 +42,7 @@ export {
     getCurrentDate,
     getColorClass,
     saveTasksToStorage,
-    getTasksFromStorage
+    getTasksFromStorage,
+    saveUsersToStorage,
+    getUsersFromStorage
 }

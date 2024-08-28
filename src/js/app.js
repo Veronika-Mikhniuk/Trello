@@ -1,6 +1,6 @@
 import { Modal } from 'bootstrap' // обновить потом с тем что нужно
 import { Task } from './models.js'
-import { getColorClass, saveTasksToStorage, getTasksFromStorage } from './methods.js'
+import { getColorClass, saveTasksToStorage, getTasksFromStorage, getUsersFromStorage } from './methods.js'
 import { getUsers } from './requests.js'
 
 // Обработка формы с добавлением задач
@@ -8,19 +8,24 @@ import { getUsers } from './requests.js'
 // Variables------------------------------------------------------------------
 const addTaskModalElement = document.querySelector('#addTaskModal')
 const deleteTasksModalElement = document.querySelector('#deleteConfirmationModal')
+const editTaskModalElement = document.querySelector('#editTaskModal')
 const addTaskModal = new Modal(addTaskModalElement) //Инициализация модального окна чтоб были доступны его методы
 const deleteConfirmationModal = new Modal(deleteTasksModalElement)
+const editTaskModal = new Modal(editTaskModalElement)
 
 const addTaskFormElement = document.querySelector('#addTaskForm')
+const editTaskFormElement = document.querySelector('#editTaskForm')
 const tasksBlock = document.querySelector('.board')
 const deleteConfirmationButtonElement = document.querySelector('#deleteTasksConfirm')
 
 // Add event listeners------------------------------------------------------------------
 addTaskFormElement.addEventListener('submit', handleSubmitFormAddTask)
+editTaskFormElement.addEventListener('submit', handleSubmitFormEditTask)
 addTaskModalElement.addEventListener('hidden.bs.modal', handleCloseModalAddTask)
 tasksBlock.addEventListener('click', handleClickDropdownMove)
 tasksBlock.addEventListener('click', handleClickButtonDelete)
 deleteConfirmationButtonElement.addEventListener('click', handleClickButtonDeleteDone)
+tasksBlock.addEventListener('click', handleClickButtonEdit)
 
 
 // Handlers------------------------------------------------------------------
@@ -30,9 +35,9 @@ function handleSubmitFormAddTask(event) {
 
     const formData = new FormData(addTaskFormElement)
     const fromDataEntries = Object.fromEntries(formData.entries())
-    const { title, description, user } = fromDataEntries
+    const { title, description, userId } = fromDataEntries //// user содержит  ID, а не name. То есть берется именно value, а не такст option
 
-    const task = new Task(title, description, user)
+    const task = new Task(title, description, userId)
     tasks.push(task)
 
     saveTasksToStorage(tasks)
@@ -40,6 +45,35 @@ function handleSubmitFormAddTask(event) {
 
     addTaskModal.hide()
     addTaskFormElement.reset()
+
+}
+
+function handleSubmitFormEditTask(event) {
+    event.preventDefault()
+    let tasks = getTasksFromStorage()
+
+    const formData = new FormData(editTaskFormElement)
+    const fromDataEntries = Object.fromEntries(formData.entries())
+    const { taskIdValue, editedTitle, editedDescription, editedUserId } = fromDataEntries
+
+    tasks = tasks.map((task) => {
+        if (task.taskId == taskIdValue) {
+            return { //Создание именно новоого обьекта
+                ...task, //Копирование свойств старого, и замена некоторых из них ниже
+                title: editedTitle,
+                description: editedDescription,
+                userId: editedUserId,
+            }
+        }
+        return task
+
+    })
+
+    saveTasksToStorage(tasks)
+    render(tasks)
+
+    editTaskModal.hide()
+    editTaskFormElement.reset()
 
 }
 
@@ -56,7 +90,7 @@ function handleClickDropdownMove({ target }) {
         target.classList.contains('dropdown-item-done')) {
 
         const { dataset: { taskId } } = target.closest('.board__task')
-        const index = tasks.findIndex((task) => task.id == taskId)
+        const index = tasks.findIndex((task) => task.taskId == taskId)
 
         if (index !== -1) {
 
@@ -92,7 +126,7 @@ function handleClickButtonDelete({ target }) {
 
         tasks.forEach((task, index) => {
 
-            if (task.id == taskId) {
+            if (task.taskId == taskId) {
                 tasks.splice(index, 1)
             }
 
@@ -110,6 +144,26 @@ function handleClickButtonDeleteDone() {
     deleteConfirmationModal.hide()
 }
 
+function handleClickButtonEdit({ target }) {
+    if (target.classList.contains('board__task-edit')) {
+        let tasks = getTasksFromStorage()
+        const { dataset: { taskId } } = target.closest('.board__task')
+
+        tasks.forEach((task) => {
+
+            if (task.taskId == taskId) {
+                document.querySelector('#editTaskTitle').value = task.title
+                document.querySelector('#editTaskDescription').value = task.description
+                document.querySelector('#editTaskUser').value = task.userId
+                document.querySelector('#taskId').value = task.taskId //Добавляю ID, чтобы при изменениии идентифицировать какую карточку изменить в массиве
+
+                editTaskModal.show()
+            }
+        })
+    }
+
+}
+
 // Methods------------------------------------------------------------------
 
 function render(tasks) {
@@ -120,8 +174,10 @@ function render(tasks) {
     progressBlock.innerHTML = ''
     doneBlock.innerHTML = ''
 
-    tasks.forEach(({ title, description, user, createdAt, colorClass, id, status }) => {
-        const taskHTML = buildTemplateTask({ title, description, user, createdAt, colorClass, id })
+    tasks.forEach(({ title, description, userId, createdAt, colorClass, taskId, status }) => {
+        const userList = getUsersFromStorage()
+        const userName = userList.find((user) => user.id == userId).name //ищем в массиве тот обьект юзера, у которого ID равно значению user из обьекта задчи
+        const taskHTML = buildTemplateTask({ title, description, userId: userName, createdAt, colorClass, taskId }) //заменяем значение user на userName
 
         if (status == 'todo') {
             todoBlock.insertAdjacentHTML('afterbegin', taskHTML)
@@ -162,9 +218,9 @@ function updateTaskCount(tasks) {
 }
 
 // Templates------------------------------------------------------------------
-const buildTemplateTask = ({ title, description, user, createdAt, colorClass, id }) => {
+const buildTemplateTask = ({ title, description, userId, createdAt, colorClass, taskId }) => {
     return `
-    <div class="board__task ${colorClass}" data-task-id="${id}">
+    <div class="board__task ${colorClass}" data-task-id="${taskId}">
         <div class="board__task-header">
             <h3 class="board__task-title d-block">${title}</h3>
             <div class="board__task-actions">
@@ -199,7 +255,7 @@ const buildTemplateTask = ({ title, description, user, createdAt, colorClass, id
         </div>
         <p class="board__task-description">${description}</p>
         <div class="board__task-footer">
-            <span class="board__task-user">${user}</span>
+            <span class="board__task-user">${userId}</span>
             <span class="board__task-time">${createdAt}</span>
         </div>
     </div>
@@ -211,7 +267,8 @@ const buildTemplateTime = (hours, minutes, seconds) => {
 }
 
 // -------------------------------код
+
+getUsers()
 render(getTasksFromStorage())
 document.addEventListener('DOMContentLoaded', getCurrentTime)
 setInterval(getCurrentTime, 1000)
-getUsers()

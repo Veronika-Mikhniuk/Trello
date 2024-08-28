@@ -1,15 +1,18 @@
+import { saveUsersToStorage } from './methods.js'
+let userList = [] //Сохраняем юзеров в переменную, чтобы иметь оступ к именам---------------------------------------------------------------------------------
+
 function getUsers() {
-    fetch('https://jsonplaceholder.typicode.com/users/1234')
+    fetch('https://jsonplaceholder.typicode.com/users')
         .then((response) => {
             if (!response.ok) {
                 const errorInstance = new Error(`Server Error: ${response.status}`)
                 errorInstance.status = response.status
                 throw errorInstance
-                
             }
             return response.json()
         })
         .then((users) => {
+            saveUsersToStorage(users)
             renderUsers(users)
         })
         .catch((error) => {
@@ -24,12 +27,17 @@ function getUsers() {
 
 function renderUsers(users) {
     const selectElement = document.querySelector('#addTaskUser')
+    const editSelectElement = document.querySelector('#editTaskUser')
 
     users.forEach((user) => {
         const userElement = document.createElement('option')
+        const editUserElement = document.createElement('option')
         selectElement.insertAdjacentElement('beforeend', userElement)
+        editSelectElement.insertAdjacentElement('beforeend', editUserElement)
         userElement.setAttribute('value', user.id)
         userElement.textContent = user.name
+        editUserElement.setAttribute('value', user.id)
+        editUserElement.textContent = user.name
     })
 }
 
@@ -41,5 +49,6 @@ function renderErrorOption(message) {
     selectElement.insertAdjacentElement('beforeend', errorElement)
 }
 export {
-    getUsers
+    getUsers,
+    userList
 }
