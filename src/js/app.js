@@ -1,18 +1,21 @@
-import { Modal } from 'bootstrap' // обновить потом с тем что нужно
+import { Modal } from 'bootstrap'
 import { Task } from './models.js'
 import { getColorClass, saveTasksToStorage, getTasksFromStorage, getUsersFromStorage } from './methods.js'
 import { getUsers } from './requests.js'
 
-// Обработка формы с добавлением задач
-
 // Variables------------------------------------------------------------------
+//Modals
 const addTaskModalElement = document.querySelector('#addTaskModal')
-const deleteTasksModalElement = document.querySelector('#deleteConfirmationModal')
 const editTaskModalElement = document.querySelector('#editTaskModal')
-const addTaskModal = new Modal(addTaskModalElement) //Инициализация модального окна чтоб были доступны его методы
-const deleteConfirmationModal = new Modal(deleteTasksModalElement)
-const editTaskModal = new Modal(editTaskModalElement)
+const deleteTasksModalElement = document.querySelector('#deleteConfirmationModal')
+const taskLimitModalElement = document.querySelector('#taskLimitModal')
 
+const addTaskModal = new Modal(addTaskModalElement) //Инициализация модального окна чтоб были доступны его методы
+const editTaskModal = new Modal(editTaskModalElement)
+const deleteConfirmationModal = new Modal(deleteTasksModalElement)
+const limitWarningModal = new Modal(taskLimitModalElement)
+
+//Other variables
 const addTaskFormElement = document.querySelector('#addTaskForm')
 const editTaskFormElement = document.querySelector('#editTaskForm')
 const tasksBlock = document.querySelector('.board')
@@ -22,10 +25,8 @@ const deleteConfirmationButtonElement = document.querySelector('#deleteTasksConf
 addTaskFormElement.addEventListener('submit', handleSubmitFormAddTask)
 editTaskFormElement.addEventListener('submit', handleSubmitFormEditTask)
 addTaskModalElement.addEventListener('hidden.bs.modal', handleCloseModalAddTask)
-tasksBlock.addEventListener('click', handleClickDropdownMove)
-tasksBlock.addEventListener('click', handleClickButtonDelete)
+tasksBlock.addEventListener('click', handleClickWrapperTasks)
 deleteConfirmationButtonElement.addEventListener('click', handleClickButtonDeleteDone)
-tasksBlock.addEventListener('click', handleClickButtonEdit)
 
 
 // Handlers------------------------------------------------------------------
@@ -82,57 +83,86 @@ function handleCloseModalAddTask() {
 }
 
 
-function handleClickDropdownMove({ target }) {
+//Может быть добавить тут обработчик и для редактирования
+
+function handleClickWrapperTasks({ target }) {
     const tasks = getTasksFromStorage()
+    const taskElement = target.closest('.board__task')
+    if (!taskElement) return //Если будет click по любому элементу, не имеющему родителя с классом board__task, прерываю функцию
+
+    const { dataset: { taskId } } = taskElement
+    let isTasksModified = false //Флаг для отслеживания изменений
 
     if (target.classList.contains('dropdown-item-todo') ||
         target.classList.contains('dropdown-item-progress') ||
         target.classList.contains('dropdown-item-done')) {
 
-        const { dataset: { taskId } } = target.closest('.board__task')
-        const index = tasks.findIndex((task) => task.taskId == taskId)
+        isTasksModified = onClickDropdownMove(target, tasks, taskId)
 
-        if (index !== -1) {
+    } else if (target.classList.contains('board__task-delete')) {
 
-            if (target.classList.contains('dropdown-item-todo')) {
-                tasks[index].status = 'todo'
-            } else if (target.classList.contains('dropdown-item-progress')) {
-                const progressTasksLength = tasks.filter(task => task.status == 'in-progress').length
+        isTasksModified = onClickButtonDelete(tasks, taskId)
 
-                if (progressTasksLength <= 5) {
-                    tasks[index].status = 'in-progress'
-                } else {
-                    const limitWarningModal = new Modal(document.querySelector('#taskLimitModal'))
-                    limitWarningModal.show()
-                }
+    } else if (target.classList.contains('board__task-edit')) {
 
-            } else {
-                tasks[index].status = 'done'
-            }
+        isTasksModified = onClickButtonEdit(tasks, taskId)
+    }
 
-            tasks[index].colorClass = getColorClass(tasks[index].status)
-            saveTasksToStorage(tasks)
-            render(tasks)
-        }
+    if (isTasksModified) {
+        saveTasksToStorage(tasks)
+        render(tasks)
     }
 }
 
-function handleClickButtonDelete({ target }) {
-    const tasks = getTasksFromStorage()
+function onClickDropdownMove(target, tasks, taskId) {
+    const index = tasks.findIndex((task) => task.taskId == taskId)
 
-    if (target.classList.contains('board__task-delete')) {
+    if (index !== -1) {
 
-        const { dataset: { taskId } } = target.closest('.board__task')
+        if (target.classList.contains('dropdown-item-todo')) {
+            tasks[index].status = 'todo'
+        } else if (target.classList.contains('dropdown-item-progress')) {
+            const progressTasksLength = tasks.filter(task => task.status == 'in-progress').length
 
-        tasks.forEach((task, index) => {
-
-            if (task.taskId == taskId) {
-                tasks.splice(index, 1)
+            if (progressTasksLength <= 5) {
+                tasks[index].status = 'in-progress'
+            } else {
+                limitWarningModal.show()
+                return false
             }
 
-            saveTasksToStorage(tasks)
-            render(tasks)
-        })
+        } else {
+            tasks[index].status = 'done'
+        }
+
+        tasks[index].colorClass = getColorClass(tasks[index].status)
+        return true
+    }
+
+    return false
+}
+
+function onClickButtonDelete(tasks, taskId) {
+    const index = tasks.findIndex(task => task.taskId == taskId)
+
+    if (index !== -1) {
+        tasks.splice(index, 1)
+        return true
+    }
+
+    return false
+}
+
+function onClickButtonEdit(tasks, taskId) {
+    const task = tasks.find(task => task.taskId == taskId);
+
+    if (task) {
+        document.querySelector('#editTaskTitle').value = task.title
+        document.querySelector('#editTaskDescription').value = task.description
+        document.querySelector('#editTaskUser').value = task.userId
+        document.querySelector('#taskId').value = task.taskId //Добавляю ID, чтобы при изменениии идентифицировать какую карточку изменить в массиве
+
+        editTaskModal.show()
     }
 }
 
@@ -143,27 +173,7 @@ function handleClickButtonDeleteDone() {
     render(tasks)
     deleteConfirmationModal.hide()
 }
-
-function handleClickButtonEdit({ target }) {
-    if (target.classList.contains('board__task-edit')) {
-        let tasks = getTasksFromStorage()
-        const { dataset: { taskId } } = target.closest('.board__task')
-
-        tasks.forEach((task) => {
-
-            if (task.taskId == taskId) {
-                document.querySelector('#editTaskTitle').value = task.title
-                document.querySelector('#editTaskDescription').value = task.description
-                document.querySelector('#editTaskUser').value = task.userId
-                document.querySelector('#taskId').value = task.taskId //Добавляю ID, чтобы при изменениии идентифицировать какую карточку изменить в массиве
-
-                editTaskModal.show()
-            }
-        })
-    }
-
-}
-
+ 
 // Methods------------------------------------------------------------------
 
 function render(tasks) {
@@ -181,11 +191,9 @@ function render(tasks) {
 
         if (status == 'todo') {
             todoBlock.insertAdjacentHTML('afterbegin', taskHTML)
-        }
-        if (status == 'in-progress') {
+        } else if (status == 'in-progress') {
             progressBlock.insertAdjacentHTML('afterbegin', taskHTML)
-        }
-        if (status == 'done') {
+        } else if (status == 'done') {
             doneBlock.insertAdjacentHTML('afterbegin', taskHTML)
         }
     })
