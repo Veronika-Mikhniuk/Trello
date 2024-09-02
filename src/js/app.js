@@ -1,6 +1,6 @@
 import { Modal } from 'bootstrap'
 import { Task } from './models.js'
-import { getColorClass, saveTasksToStorage, getTasksFromStorage, getUsersFromStorage } from './methods.js'
+import { getColorClass, saveTasksToStorage, getTasksFromStorage, getUsersFromStorage, showEmptyListMessage, toggleDeleteAllButton } from './methods.js'
 import { getUsers } from './requests.js'
 
 // Variables------------------------------------------------------------------
@@ -173,7 +173,7 @@ function handleClickButtonDeleteDone() {
     render(tasks)
     deleteConfirmationModal.hide()
 }
- 
+
 // Methods------------------------------------------------------------------
 
 function render(tasks) {
@@ -184,20 +184,23 @@ function render(tasks) {
     progressBlock.innerHTML = ''
     doneBlock.innerHTML = ''
 
+    showEmptyListMessage(tasks, todoBlock)
+
     tasks.forEach(({ title, description, userId, createdAt, colorClass, taskId, status }) => {
         const userList = getUsersFromStorage()
         const userName = userList.find((user) => user.id == userId).name //ищем в массиве тот обьект юзера, у которого ID равно значению user из обьекта задчи
         const taskHTML = buildTemplateTask({ title, description, userId: userName, createdAt, colorClass, taskId }) //заменяем значение user на userName
 
         if (status == 'todo') {
-            todoBlock.insertAdjacentHTML('afterbegin', taskHTML)
+            todoBlock.insertAdjacentHTML('beforeend', taskHTML)
         } else if (status == 'in-progress') {
-            progressBlock.insertAdjacentHTML('afterbegin', taskHTML)
+            progressBlock.insertAdjacentHTML('beforeend', taskHTML)
         } else if (status == 'done') {
-            doneBlock.insertAdjacentHTML('afterbegin', taskHTML)
+            doneBlock.insertAdjacentHTML('beforeend', taskHTML)
         }
     })
 
+    toggleDeleteAllButton(tasks)
     updateTaskCount(tasks)
 }
 

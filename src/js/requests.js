@@ -1,5 +1,4 @@
 import { saveUsersToStorage } from './methods.js'
-let userList = [] //Сохраняем юзеров в переменную, чтобы иметь оступ к именам---------------------------------------------------------------------------------
 
 function getUsers() {
     fetch('https://jsonplaceholder.typicode.com/users')
@@ -49,6 +48,5 @@ function renderErrorOption(message) {
     selectElement.insertAdjacentElement('beforeend', errorElement)
 }
 export {
-    getUsers,
-    userList
+    getUsers
 }

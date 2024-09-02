@@ -37,6 +37,24 @@ function saveUsersToStorage(users) {
     localStorage.setItem('users', JSON.stringify(users))
 }
 
+function showEmptyListMessage(tasks, block) {
+    if (tasks.length == 0) {
+        block.innerHTML = '<div class="board__empty-list">Empty List</div>'
+    }
+}
+
+function toggleDeleteAllButton(tasks) {
+    doneTasks = tasks.filter(task => task.status =='done')
+    const deleteAllButtonElement = document.querySelector('.board__delete-button')
+
+    if (doneTasks.length > 0) {
+        deleteAllButtonElement.classList.remove('d-none')
+    } 
+    else {
+        deleteAllButtonElement.classList.add('d-none')
+    }
+}
+
 export {
     generateUniqueId,
     getCurrentDate,
@@ -44,5 +62,7 @@ export {
     saveTasksToStorage,
     getTasksFromStorage,
     saveUsersToStorage,
-    getUsersFromStorage
+    getUsersFromStorage,
+    showEmptyListMessage,
+    toggleDeleteAllButton
 }
