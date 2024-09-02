@@ -1,0 +1,122 @@
+@import "variables";
+
+.board {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 20px;
+    box-shadow: $shadow-wide;
+    border-radius: $border-radius;
+    flex-grow: 1;
+
+    &__column {
+        display: flex;
+        flex-direction: column;
+        justify-content: start;
+        height: max-content;
+        gap: $task-gap;
+        align-items: center;
+        flex: 1;
+
+
+        &_todo {
+
+            .board__column-header,
+            .board__add-button {
+                background-color: $column-todo;
+            }
+        }
+
+        &_progress {
+            .board__column-header {
+                background-color: $column-progress;
+            }
+        }
+
+        &_done {
+
+            .board__column-header,
+            .board__delete-button {
+                background-color: $column-done;
+            }
+        }
+    }
+
+    &__column-header {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        align-items: center;
+        padding: 20px;
+        box-shadow: $shadow-narrow;
+        border-radius: $border-radius;
+    }
+
+    &__column-counter-todo,
+    &__column-counter-progress,
+    &__column-counter-done {
+        margin: 0;
+        font-size: 25px;
+        font-weight: 600;
+    }
+
+    &__tasks-wrapper {
+        display: flex;
+        justify-content: start;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        gap: $task-gap;
+    }
+
+    &__task {
+        box-shadow: $shadow-narrow;
+        border-radius: $border-radius;
+        padding: 10px;
+        margin-bottom: 10px;
+        width: 100%;
+
+        &_blue {
+            //Modifiers for changing task color depending on the column
+            background-color: $task-blue;
+        }
+
+        &_gray {
+            background-color: $task-gray;
+        }
+
+        &_green {
+            background-color: $task-green;
+        }
+
+        &-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            gap: $task-gap;
+        }
+
+        &-title {
+            margin: 0;
+            font-size: 17px;
+            word-break: break-all;
+        }
+
+        &-actions {
+            display: flex;
+            gap: 5px;
+            height: max-content;
+
+            button {
+                white-space: nowrap;
+            }
+        }
+
+        &-footer {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            color: $text-muted;
+        }
+    }
+}

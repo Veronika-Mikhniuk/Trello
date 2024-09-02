@@ -1,4 +1,8 @@
+@import "variables";
 @import "~bootstrap/scss/bootstrap";
+@import "header";
+@import "tasksboard";
+@import "buttons";
 
 * {
     padding: 0;
@@ -6,155 +10,27 @@
     box-sizing: border-box;
 }
 
-.header {
+//Base layout
+html,
+body {
+    min-height: 100vh;
+    height: 100%;
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: 0px 13px 35px rgba(0, 0, 0, .08);
-    border-radius: 10px;
-    margin-top: 30px;
-    padding: 20px;
-    background-color: #e1d5e7;
-
-    &__time-wrapper {
-        box-shadow: 0px 13px 35px rgba(0, 0, 0, .08);
-        border-radius: 10px;
-        padding: 10px 20px;
-        background-color: white;
-    }
+    flex-direction: column;
+    background-color: #f3f4f6;
 }
 
-.board {
+.container-xxl {
     display: flex;
-    justify-content: space-between;
-    gap: 15px;
-    margin-top: 30px;
+    flex-direction: column;
+    flex: 1;
+    padding: 20px 0;
+}
 
-    &__column {
-        display: flex;
-        flex-direction: column;
-        justify-content: start;
-        height: max-content;
-        gap: 10px;
-        align-items: center;
-        flex: 1;
-        box-shadow: 0px 13px 35px rgba(0, 0, 0, .08);
-        border-radius: 10px;
+svg {
+    pointer-events: none;
 
-        &_todo {
-
-            .board__column-header,
-            .board__add-button {
-                background-color: #dae8fc;
-            }
-        }
-
-        &_progress {
-            .board__column-header {
-                background-color: #afaeae94;
-            }
-        }
-
-        &_done {
-
-            .board__column-header,
-            .board__delete-button {
-                background-color: #d5e8d4;
-            }
-        }
+    path {
+        pointer-events: none;
     }
-
-    &__column-header {
-        display: flex;
-        justify-content: space-between;
-        width: 100%;
-        align-items: center;
-        padding: 20px;
-        box-shadow: 0px 13px 35px rgba(0, 0, 0, .08);
-        border-radius: 10px;
-    }
-
-    &__add-button,
-    &__delete-button {
-        margin: 10px 0;
-        box-shadow: 0px 13px 35px rgba(0, 0, 0, .08);
-        border: none;
-        border-radius: 10px;
-        padding: 10px;
-        max-width: 380px;
-        width: 100%;
-    }
-
-    &__tasks-wrapper {
-        display: flex;
-        justify-content: start;
-        flex-direction: column;
-        align-items: center;
-        width: 100%;
-        gap: 10px;
-    }
-
-    &__task {
-        box-shadow: 0px 13px 35px rgba(0, 0, 0, .08);
-        border-radius: 10px;
-        padding: 10px;
-        margin-bottom: 10px;
-        max-width: 380px;
-        width: 100%;
-
-        &_blue {
-            //Модификаторы для изменения цвета в зависимости от колонки
-            background-color: #dae8fc93;
-        }
-
-        &_gray {
-            background-color: #c0c3c55b;
-        }
-
-        &_green {
-            background-color: #d5e8d494;
-        }
-
-        &-header {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 16px;
-            gap: 10px;
-        }
-
-        &-title {
-            margin: 0;
-            font-size: 17px;
-            word-break: break-all;
-        }
-
-        &-actions {
-            display: flex;
-            gap: 5px;
-            height: max-content;
-
-            button {
-                white-space: nowrap;
-            }
-        }
-
-        &-footer {
-            display: flex;
-            justify-content: space-between;
-            font-size: 14px;
-            color: #6c757d;
-        }
-    }
-
-    &__task-delete, &__task-edit {
-        svg {
-            pointer-events: none;
-
-            path {
-                pointer-events: none;
-            }
-        }
-
-    }
-
 }

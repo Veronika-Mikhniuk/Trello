@@ -1,0 +1,35 @@
+// Background colors
+$bg-main: #f3f4f6;
+$bg-header: #e1d5e7;
+
+// Task status colors
+$task-blue: #dae8fc93;
+$task-gray: #c0c3c55b;
+$task-green: #d5e8d494;
+
+// Column header colors
+$column-todo: #dae8fc;
+$column-progress: #afaeae94;
+$column-done: #d5e8d4;
+
+// Text colors
+$text-muted: #6c757d;
+
+// Button colors
+$btn-move: #f68904;
+$btn-move-hover: #ce7406;
+$btn-delete: #dc3545;
+$btn-delete-hover: #c82333;
+$btn-edit: #6c757d;
+$btn-edit-hover: #5a6268;
+$primary: #c7deff; // Bootstrap overrides
+$secondary: #d5d5d5ed;
+
+// Shadows
+$shadow-wide: 0px 13px 35px rgba(0, 0, 0, .08);
+$shadow-inset: inset 0 0 15px rgba(255, 255, 255, 0.1);
+$shadow-narrow: 0 4px 6px rgba(0, 0, 0, 0.1), $shadow-inset;
+
+// Other
+$border-radius: 10px;
+$task-gap: 10px;
