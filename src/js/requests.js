@@ -1,4 +1,6 @@
-import { saveUsersToStorage } from './methods.js'
+import {
+    saveUsersToStorage
+} from './methods.js'
 
 function getUsers() {
     fetch('https://jsonplaceholder.typicode.com/users')

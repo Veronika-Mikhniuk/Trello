@@ -1,3 +1,8 @@
+import {
+    buildTemplateTask,
+    buildTemplateTime
+} from './templates.js'
+
 function generateUniqueId() {
     return crypto.randomUUID()
 }
@@ -37,6 +42,58 @@ function saveUsersToStorage(users) {
     localStorage.setItem('users', JSON.stringify(users))
 }
 
+function render(tasks) {
+    const todoBlock = document.querySelector('.board__tasks-todo')
+    const progressBlock = document.querySelector('.board__tasks-progress')
+    const doneBlock = document.querySelector('.board__tasks-done')
+    todoBlock.innerHTML = ''
+    progressBlock.innerHTML = ''
+    doneBlock.innerHTML = ''
+
+    showEmptyListMessage(tasks, todoBlock)
+
+    tasks.forEach(({ title, description, userId, createdAt, colorClass, taskId, status }) => {
+        const userList = getUsersFromStorage()
+        const userName = userList.find((user) => user.id == userId).name //look in the array for the user object whose ID is equal to the value of userID from the task object
+        const taskHTML = buildTemplateTask({ title, description, userId: userName, createdAt, colorClass, taskId }) //replace user with userName
+
+        if (status == 'todo') {
+            todoBlock.insertAdjacentHTML('beforeend', taskHTML)
+        } else if (status == 'in-progress') {
+            progressBlock.insertAdjacentHTML('beforeend', taskHTML)
+        } else if (status == 'done') {
+            doneBlock.insertAdjacentHTML('beforeend', taskHTML)
+        }
+    })
+
+    toggleDeleteAllButton(tasks)
+    updateTaskCount(tasks)
+}
+
+function getCurrentTime() {
+    const currentDate = new Date()
+
+    const currentHours = String(currentDate.getHours()).padStart(2, '0')
+    const currentMinutes = String(currentDate.getMinutes()).padStart(2, '0')
+    const currentSeconds = String(currentDate.getSeconds()).padStart(2, '0')
+
+    const timeElement = document.querySelector('.header__time-wrapper')
+
+    timeElement.innerHTML = ''
+    timeElement.insertAdjacentHTML('afterbegin', buildTemplateTime(currentHours, currentMinutes, currentSeconds))
+}
+
+function updateTaskCount(tasks) {
+    const todoTaskCounter = document.querySelector('.board__column-counter-todo')
+    const progressTaskCounter = document.querySelector('.board__column-counter-progress')
+    const doneTaskCounter = document.querySelector('.board__column-counter-done')
+
+    todoTaskCounter.innerHTML = tasks.filter(task => task.status == 'todo').length
+    progressTaskCounter.innerHTML = tasks.filter(task => task.status == 'in-progress').length
+    doneTaskCounter.innerHTML = tasks.filter(task => task.status == 'done').length
+
+}
+
 function showEmptyListMessage(tasks, block) {
     if (tasks.length == 0) {
         block.innerHTML = '<div class="board__empty-list">Empty List</div>'
@@ -63,6 +120,9 @@ export {
     getTasksFromStorage,
     saveUsersToStorage,
     getUsersFromStorage,
+    render,
+    getCurrentTime,
+    updateTaskCount,
     showEmptyListMessage,
     toggleDeleteAllButton
 }

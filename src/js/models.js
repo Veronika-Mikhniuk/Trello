@@ -1,4 +1,8 @@
-import { generateUniqueId, getCurrentDate, getColorClass } from './methods.js'
+import {
+    generateUniqueId,
+    getCurrentDate,
+    getColorClass
+} from './methods.js'
 
 
 function Task(title, description, user) {
