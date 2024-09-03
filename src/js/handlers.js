@@ -126,6 +126,7 @@ function onClickDropdownMove(target, tasks, taskId) {
         }
 
         tasks[index].colorClass = getColorClass(tasks[index].status)
+        tasks[index].movedAt = new Date() // for sorting tasks by move time
         return true
     }
 
@@ -144,7 +145,7 @@ function onClickButtonDelete(tasks, taskId) {
 }
 
 function onClickButtonEdit(tasks, taskId) {
-    const task = tasks.find(task => task.taskId == taskId);
+    const task = tasks.find(task => task.taskId == taskId)
 
     if (task) {
         document.querySelector('#editTaskTitle').value = task.title

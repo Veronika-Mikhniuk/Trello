@@ -13,6 +13,7 @@ function Task(title, description, user) {
     this.status = 'todo'
     this.createdAt = getCurrentDate()
     this.colorClass = getColorClass(this.status)
+    this.movedAt = new Date() // for sorting tasks by move time
 }
 
 export {

@@ -3,6 +3,8 @@ import {
     buildTemplateTime
 } from './templates.js'
 
+
+//Utility methods
 function generateUniqueId() {
     return crypto.randomUUID()
 }
@@ -11,19 +13,33 @@ function getCurrentDate() {
     return new Date().toLocaleDateString('ru-RU')
 }
 
+function getCurrentTime() {
+    const currentDate = new Date()
+
+    const currentHours = String(currentDate.getHours()).padStart(2, '0')
+    const currentMinutes = String(currentDate.getMinutes()).padStart(2, '0')
+    const currentSeconds = String(currentDate.getSeconds()).padStart(2, '0')
+
+    const timeElement = document.querySelector('.header__time-wrapper')
+
+    timeElement.innerHTML = ''
+    timeElement.insertAdjacentHTML('afterbegin', buildTemplateTime(currentHours, currentMinutes, currentSeconds))
+}
+
 function getColorClass(status) {
     switch (status) {
         case 'todo':
-            return 'board__task_blue';
+            return 'board__task_blue'
         case 'in-progress':
-            return 'board__task_gray';
+            return 'board__task_gray'
         case 'done':
-            return 'board__task_green';
+            return 'board__task_green'
         default:
-            return '';
+            return ''
     }
 }
 
+//Storage methods
 function getTasksFromStorage() {
     const tasks = localStorage.getItem('tasks')
     return tasks ? JSON.parse(tasks) : []
@@ -42,6 +58,7 @@ function saveUsersToStorage(users) {
     localStorage.setItem('users', JSON.stringify(users))
 }
 
+//Render methods
 function render(tasks) {
     const todoBlock = document.querySelector('.board__tasks-todo')
     const progressBlock = document.querySelector('.board__tasks-progress')
@@ -50,9 +67,10 @@ function render(tasks) {
     progressBlock.innerHTML = ''
     doneBlock.innerHTML = ''
 
+    const sortedTasks = tasks.sort((a, b) => new Date(a.movedAt) - new Date(b.movedAt)) //sorting tasks by move time
     showEmptyListMessage(tasks, todoBlock)
 
-    tasks.forEach(({ title, description, userId, createdAt, colorClass, taskId, status }) => {
+    sortedTasks.forEach(({ title, description, userId, createdAt, colorClass, taskId, status }) => {
         const userList = getUsersFromStorage()
         const userName = userList.find((user) => user.id == userId).name //look in the array for the user object whose ID is equal to the value of userID from the task object
         const taskHTML = buildTemplateTask({ title, description, userId: userName, createdAt, colorClass, taskId }) //replace user with userName
@@ -68,19 +86,6 @@ function render(tasks) {
 
     toggleDeleteAllButton(tasks)
     updateTaskCount(tasks)
-}
-
-function getCurrentTime() {
-    const currentDate = new Date()
-
-    const currentHours = String(currentDate.getHours()).padStart(2, '0')
-    const currentMinutes = String(currentDate.getMinutes()).padStart(2, '0')
-    const currentSeconds = String(currentDate.getSeconds()).padStart(2, '0')
-
-    const timeElement = document.querySelector('.header__time-wrapper')
-
-    timeElement.innerHTML = ''
-    timeElement.insertAdjacentHTML('afterbegin', buildTemplateTime(currentHours, currentMinutes, currentSeconds))
 }
 
 function updateTaskCount(tasks) {
