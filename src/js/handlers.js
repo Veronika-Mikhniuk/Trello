@@ -105,32 +105,27 @@ function handleClickButtonDeleteDone() {
 
 // OnClick functions for handleClickWrapperTasks
 function onClickDropdownMove(target, tasks, taskId) {
-    const index = tasks.findIndex((task) => task.taskId == taskId)
+    const task = tasks.find((task) => task.taskId == taskId)
 
-    if (index !== -1) {
+    if (target.classList.contains('dropdown-item-todo')) {
+        task.status = 'todo'
+    } else if (target.classList.contains('dropdown-item-progress')) {
+        const progressTasksLength = tasks.filter(task => task.status == 'in-progress').length
 
-        if (target.classList.contains('dropdown-item-todo')) {
-            tasks[index].status = 'todo'
-        } else if (target.classList.contains('dropdown-item-progress')) {
-            const progressTasksLength = tasks.filter(task => task.status == 'in-progress').length
-
-            if (progressTasksLength <= 5) {
-                tasks[index].status = 'in-progress'
-            } else {
-                limitWarningModal.show()
-                return false
-            }
-
+        if (progressTasksLength <= 5) {
+            task.status = 'in-progress'
         } else {
-            tasks[index].status = 'done'
+            limitWarningModal.show()
+            return false
         }
 
-        tasks[index].colorClass = getColorClass(tasks[index].status)
-        tasks[index].movedAt = new Date() // for sorting tasks by move time
-        return true
+    } else {
+        task.status = 'done'
     }
 
-    return false
+    task.colorClass = getColorClass(task.status)
+    task.movedAt = new Date() // for sorting tasks by move time
+    return true
 }
 
 function onClickButtonDelete(tasks, taskId) {
