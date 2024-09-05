@@ -20,7 +20,7 @@ function handleSubmitFormAddTask(event) {
 
     const formData = new FormData(addTaskFormElement)
     const fromDataEntries = Object.fromEntries(formData.entries())
-    const { title, description, userId } = fromDataEntries //// userId, because: When saving data, FormData takes the value of option, not the option text
+    const { title, description, userId } = fromDataEntries // userId, because: When saving data, FormData takes the value of option, not the option text
 
     const task = new Task(title, description, userId)
     tasks.push(task)
@@ -43,8 +43,8 @@ function handleSubmitFormEditTask(event) {
 
     tasks = tasks.map((task) => {
         if (task.taskId == taskIdValue) {
-            return { //Creating exactly a new object
-                ...task, //Copying the properties of the old one, and replacing some of them below
+            return { // Creating exactly a new object
+                ...task, // Copying the properties of the old one, and replacing some of them below
                 title: editedTitle,
                 description: editedDescription,
                 userId: editedUserId,
@@ -69,10 +69,10 @@ function handleCloseModalAddTask() {
 function handleClickWrapperTasks({ target }) {
     const tasks = getTasksFromStorage()
     const taskElement = target.closest('.board__task')
-    if (!taskElement) return //If it will be a click on any element doesn't have a parent with the board__task class, interrupt the function
+    if (!taskElement) return // If it will be a click on any element doesn't have a parent with the board__task class, interrupt the function
 
     const { dataset: { taskId } } = taskElement
-    let isTasksModified = false //Flag for monitoring changes
+    let isTasksModified = false // Flag for monitoring changes
 
     if (target.classList.contains('dropdown-item-todo') ||
         target.classList.contains('dropdown-item-progress') ||
@@ -146,7 +146,7 @@ function onClickButtonEdit(tasks, taskId) {
         document.querySelector('#editTaskTitle').value = task.title
         document.querySelector('#editTaskDescription').value = task.description
         document.querySelector('#editTaskUser').value = task.userId
-        document.querySelector('#taskId').value = task.taskId //Added ID to identify which card to change in the array when changing it
+        document.querySelector('#taskId').value = task.taskId // Added ID to identify which card to change in the array when changing it
 
         editTaskModal.show()
     }

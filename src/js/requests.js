@@ -1,5 +1,7 @@
 import {
-    saveUsersToStorage
+    saveUsersToStorage,
+    renderUsers,
+    renderErrorOption
 } from './methods.js'
 
 async function getUsers() {
@@ -24,29 +26,6 @@ async function getUsers() {
     }
 }
 
-function renderUsers(users) {
-    const selectElement = document.querySelector('#addTaskUser')
-    const editSelectElement = document.querySelector('#editTaskUser')
-
-    users.forEach((user) => {
-        const userElement = document.createElement('option')
-        const editUserElement = document.createElement('option')
-        selectElement.insertAdjacentElement('beforeend', userElement)
-        editSelectElement.insertAdjacentElement('beforeend', editUserElement)
-        userElement.setAttribute('value', user.id)
-        userElement.textContent = user.name
-        editUserElement.setAttribute('value', user.id)
-        editUserElement.textContent = user.name
-    })
-}
-
-function renderErrorOption(message) {
-    const selectElement = document.querySelector('#addTaskUser')
-    const errorElement = document.createElement('option')
-    errorElement.textContent = message
-    errorElement.disabled = true
-    selectElement.insertAdjacentElement('beforeend', errorElement)
-}
 export {
     getUsers
 }

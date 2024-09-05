@@ -4,7 +4,7 @@ import {
 } from './templates.js'
 
 
-//Utility methods
+// Utility methods
 function generateUniqueId() {
     return crypto.randomUUID()
 }
@@ -39,7 +39,7 @@ function getColorClass(status) {
     }
 }
 
-//Storage methods
+// Storage methods
 function getTasksFromStorage() {
     const tasks = localStorage.getItem('tasks')
     return tasks ? JSON.parse(tasks) : []
@@ -58,7 +58,7 @@ function saveUsersToStorage(users) {
     localStorage.setItem('users', JSON.stringify(users))
 }
 
-//Render methods
+// Render methods
 function render(tasks) {
     const todoBlock = document.querySelector('.board__tasks-todo')
     const progressBlock = document.querySelector('.board__tasks-progress')
@@ -67,13 +67,13 @@ function render(tasks) {
     progressBlock.innerHTML = ''
     doneBlock.innerHTML = ''
 
-    const sortedTasks = tasks.sort((a, b) => new Date(a.movedAt) - new Date(b.movedAt)) //sorting tasks by move time
+    const sortedTasks = tasks.sort((a, b) => new Date(a.movedAt) - new Date(b.movedAt)) // sorting tasks by move time
     showEmptyListMessage(tasks, todoBlock)
 
     sortedTasks.forEach(({ title, description, userId, createdAt, colorClass, taskId, status }) => {
         const userList = getUsersFromStorage()
-        const userName = userList.find((user) => user.id == userId).name //look in the array for the user object whose ID is equal to the value of userID from the task object
-        const taskHTML = buildTemplateTask({ title, description, userId: userName, createdAt, colorClass, taskId }) //replace user with userName
+        const userName = userList.find((user) => user.id == userId).name // look in the array for the user object whose ID is equal to the value of userID from the task object
+        const taskHTML = buildTemplateTask({ title, description, userId: userName, createdAt, colorClass, taskId }) // replace user with userName
 
         if (status == 'todo') {
             todoBlock.insertAdjacentHTML('beforeend', taskHTML)
@@ -106,7 +106,7 @@ function showEmptyListMessage(tasks, block) {
 }
 
 function toggleDeleteAllButton(tasks) {
-    doneTasks = tasks.filter(task => task.status =='done')
+    const doneTasks = tasks.filter(task => task.status =='done')
     const deleteAllButtonElement = document.querySelector('.board__delete-button')
 
     if (doneTasks.length > 0) {
@@ -115,6 +115,30 @@ function toggleDeleteAllButton(tasks) {
     else {
         deleteAllButtonElement.classList.add('d-none')
     }
+}
+
+function renderUsers(users) {
+    const selectElement = document.querySelector('#addTaskUser')
+    const editSelectElement = document.querySelector('#editTaskUser')
+
+    users.forEach((user) => {
+        const userElement = document.createElement('option')
+        const editUserElement = document.createElement('option')
+        selectElement.insertAdjacentElement('beforeend', userElement)
+        editSelectElement.insertAdjacentElement('beforeend', editUserElement)
+        userElement.setAttribute('value', user.id)
+        userElement.textContent = user.name
+        editUserElement.setAttribute('value', user.id)
+        editUserElement.textContent = user.name
+    })
+}
+
+function renderErrorOption(message) {
+    const selectElement = document.querySelector('#addTaskUser')
+    const errorElement = document.createElement('option')
+    errorElement.textContent = message
+    errorElement.disabled = true
+    selectElement.insertAdjacentElement('beforeend', errorElement)
 }
 
 export {
@@ -129,5 +153,7 @@ export {
     getCurrentTime,
     updateTaskCount,
     showEmptyListMessage,
-    toggleDeleteAllButton
+    toggleDeleteAllButton,
+    renderUsers,
+    renderErrorOption
 }
