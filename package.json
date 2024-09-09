@@ -1,10 +1,11 @@
 {
   "name": "trello-project",
   "version": "1.0.0",
+  "homepage": "https://Veronika-Mikhniuk.github.io/Trello",
   "source": "src/index.html",
   "scripts": {
     "dev": "parcel --open",
-    "build": "parcel build"
+    "build": "parcel build src/index.html --public-url ./"
   },
   "author": "",
   "license": "ISC",
